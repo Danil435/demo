@@ -17,6 +17,7 @@ index.php
 </section>
 
 <?php include 'inc/footer.php'; ?>///
+<a href="https://github.com/Danil435/demo">1</a>
 ////////
 style.css
 /* Базовые сбросы и глобальные стили */
@@ -566,4 +567,38 @@ $_SESSION['user_id'] = $user['id'];
 $_SESSION['is_admin'] = ($user['login'] === 'admin');
 
 echo json_encode(['status' => 'success', 'message' => 'Авторизация успешна']);
+////////////////////////
+DataBase
+-- Таблица пользователей
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fio VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    login VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Таблица заявок
+CREATE TABLE requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    cargo_type ENUM('хрупкое', 'скоропортящееся', 'требуется рефрижератор', 'животные', 'жидкость', 'мебель', 'мусор') NOT NULL,
+    cargo_weight DECIMAL(10, 2) NOT NULL,
+    dimensions VARCHAR(100) NOT NULL,
+    from_address TEXT NOT NULL,
+    to_address TEXT NOT NULL,
+    datetime DATETIME NOT NULL,
+    status ENUM('Новая', 'В работе', 'Отменена') DEFAULT 'Новая',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Таблица отзывов (опционально)
+CREATE TABLE feedback (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 ```
